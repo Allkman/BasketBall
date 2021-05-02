@@ -1,0 +1,33 @@
+﻿@page "/teams/create"
+@inject NavigationManager navigationManager
+@inject ITeamRepository teamRepository
+@inject IGameRepository gameRepository
+
+@if (notSelectedGames != null)
+{
+    <TeamForm Team="team" OnValidSubmit="SaveTeam" NotSelectedGames="notSelectedGames" />
+
+}
+
+@code {
+    private Team team = new Team();
+    private List<Game> notSelectedGames;
+
+    protected async override Task OnInitializedAsync()
+    {
+       notSelectedGames = await gameRepository.GetGames();
+    }
+    private async Task SaveTeam()
+    {
+        try
+        {
+            var teamId = await teamRepository.CreateTeam(team);
+            navigationManager.NavigateTo($"team/{teamId}/{team.TeamName.Replace(" ", "-")}"); //i need to redirect it to TeamProfile component
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+
+    }
+}

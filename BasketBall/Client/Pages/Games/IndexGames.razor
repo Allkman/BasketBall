@@ -1,0 +1,47 @@
+﻿@page "/games"
+@inject IGameRepository gameRepository
+
+<h3>Index Games</h3>
+
+<div class="form-group">
+    <a class="btn btn-info" href="game/create">New Game</a>
+</div>
+<GenericList List="games">
+    <WholeListTemplate>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Game Title</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in games)
+                {
+                    <tr>
+                        <td>
+                            <a class="btn btn-success">Edit</a>
+                            <button class="btn btn-danger">Delete</button>
+                        </td>
+                        <td>@item.GameTitle</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </WholeListTemplate>
+</GenericList>
+@code { 
+    private List<Game> games;
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            games = await gameRepository.GetGames();
+        }
+        catch (Exception ex)
+        {
+
+            Console.WriteLine(ex.Message);
+        }
+    }
+}

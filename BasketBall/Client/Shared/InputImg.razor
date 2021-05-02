@@ -1,0 +1,48 @@
+﻿<div>
+    <label>@Label</label>
+    <div>        
+        <InputFile accept=".jpg,.jpeg,.png" OnChange="OnChange" />
+    </div>
+</div>
+<div>
+    @if (imageBase64 != null)
+    {
+        <div>
+            <div style="margin:10px;">
+                <img src="data:image/jpg;base64, @imageBase64" style="width:250px;" />
+            </div>
+        </div>
+    }
+    @if (ImageURL != null)
+    {
+        <div>
+            <div style="margin:10px;">
+                <img src="@ImageURL" style="width:250px;" />
+            </div>
+        </div>
+    }
+</div>
+@code {
+    [Parameter] public string Label { get; set; } = "Image";
+    // eventcallbck is to inform a parent componenet that a new file has been selected
+    [Parameter] public EventCallback<string> OnSelectedImage { get; set; }
+
+    //i need this parameter to pass a current picture to a person if it was already added
+    //for example if when I edit a person i should be able to see the current picture and want to be able to change it.
+    [Parameter] public string ImageURL { get; set; }
+    private string imageBase64;
+
+    async Task OnChange(InputFileChangeEventArgs e)
+    {
+        var imageFiles = e.GetMultipleFiles();
+        foreach (var imageFile in imageFiles)
+        {
+            var buffer = new byte[imageFile.Size];
+            await imageFile.OpenReadStream().ReadAsync(buffer);
+            imageBase64 = Convert.ToBase64String(buffer);
+            await OnSelectedImage.InvokeAsync(imageBase64);
+            ImageURL = null; //this is when user select new picture, the current must be set to null
+            StateHasChanged(); // ------!!!!! ---- So that the user could see the changes that were made. An image has been added in this case
+        }
+    }
+}

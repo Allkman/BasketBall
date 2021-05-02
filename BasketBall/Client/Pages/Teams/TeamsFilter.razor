@@ -1,0 +1,146 @@
+﻿@page "/teams/search"
+@inject ITeamRepository teamRepository
+@inject IGameRepository gameRepository
+@inject NavigationManager navigationManager
+<!--<EditForm Model="filterTeamsDTO">
+<div class="form-inline">
+    <div class="form-group mb-2">
+        <label for="teamName" class="sr-only">Team Name</label>
+        <input type="text" class="form-control" id="teamName" placeholder="Team Name"
+               @bind-value="filterTeamsDTO.TeamName" @bind-value:event="oninput"
+               @onkeypress="@((KeyboardEventArgs e) => TeamNameKeyPress(e))" />-->
+@* :event is for when user types in team name the result would be updated on the time of input, and then onkeypress (Enter) will display results *@
+
+<!--</div>
+    </div>
+    <div class="form-group" mx-sm-3 mb-2>
+        <select class="form-control" @bind="filterTeamsDTO.GameId">
+            <option value="0">
+                ---Select a Game
+            </option>
+            @foreach (var game in games)
+            {
+                <option value="@game.GameId">@game.GameTitle</option>
+            }
+        </select>
+    </div>
+    <div class="form-group mx-sm-3 mb-2">
+        <input type="checkbox" class="form-check-input" id="easternConference" @bind="filterTeamsDTO.EasternConference" />
+        <label class="form-check-label" for="easternConference">Eastern Conference</label>
+    </div>
+    <div class="form-group mx-sm-3 mb-2">
+        <input type="checkbox" class="form-check-input" id="westernConference" @bind="filterTeamsDTO.WesternConference" />
+        <label class="form-check-label" for="westernConference">Western Conference</label>
+    </div>
+    <div>
+        <button type="button" class="btn btn-primary mb-2 mx-sm-3" @onclick="SearchForTeams">Filter</button>
+        <button type="button" class="btn btn-danger mb-2" @onclick="Clear">Clear</button>
+    </div>
+</EditForm>
+<TeamsList Teams="teams"></TeamsList>
+<Pagination CurrentPage="filterTeamsDTO.Page" TotalAmountOfPages="totalAmountOfPages"></Pagination>
+    @code {
+        private FilterTeamsDTO filterTeamsDTO = new FilterTeamsDTO(); //initializing to avoid null reference exeption
+        private int totalAmountOfPages; //assining in LoadTeams();
+        private List<Team> teams;
+        private List<Game> games = new List<Game>();
+
+        protected override async Task OnInitializedAsync()
+        {
+            var queryStrings = navigationManager.GetQueryStrings(navigationManager.Uri); // to display search query result in url
+            games = await gameRepository.GetGames();
+            if (queryStrings != null)
+            {
+                FillFilterWithQuesryStrings(queryStrings);
+            }
+            await LoadTeams();
+        }
+        private void FillFilterWithQuesryStrings(Dictionary<string,string> queryStrings)
+        {
+            if (queryStrings.ContainsKey("gameId"))
+            {
+                filterTeamsDTO.GameId = int.Parse(queryStrings["gameId"]);
+            }
+
+            if (queryStrings.ContainsKey("teamName"))
+            {
+                filterTeamsDTO.TeamName = queryStrings["teamName"];
+            }
+
+            if (queryStrings.ContainsKey("easternConference"))
+            {
+                filterTeamsDTO.EasternConference = bool.Parse(queryStrings["easternConference"]);
+            }
+
+            if (queryStrings.ContainsKey("westernConference"))
+            {
+                filterTeamsDTO.WesternConference = bool.Parse(queryStrings["westernConference"]);
+            }
+
+            if (queryStrings.ContainsKey("page"))
+            {
+                filterTeamsDTO.Page = int.Parse(queryStrings["page"]);
+            }
+        }
+
+        private async Task SelectedPage(int page)
+        {
+            filterTeamsDTO.Page = page;
+            await LoadTeams();
+        }
+
+        private async Task LoadTeams()
+        {
+            var quesryString = GenerateQueryString();
+            if (!string.IsNullOrWhiteSpace(quesryString))
+            {
+                quesryString = $"{quesryString}";
+                navigationManager.NavigateTo("/teams/search" + quesryString);
+            }
+
+            var paginatedResponse = await teamRepository.GetTeamsFiltered(filterTeamsDTO);
+            teams = paginatedResponse.Response;
+            totalAmountOfPages = paginatedResponse.TotalAmountOfPages;
+        }
+        private string GenerateQueryString()
+        {
+            var queryStringsDictionary = new Dictionary<string, string>();
+            queryStringsDictionary["gameId"] = filterTeamsDTO.GameId.ToString();
+            queryStringsDictionary["teamName"] = filterTeamsDTO.TeamName ?? "";
+            queryStringsDictionary["easternConference"] = filterTeamsDTO.EasternConference.ToString();
+            queryStringsDictionary["westernConference"] = filterTeamsDTO.WesternConference.ToString();
+            queryStringsDictionary["page"] = filterTeamsDTO.GameId.ToString();
+
+            var defaultValue = new List<string>() { "false", "", "0" };
+
+            //returning filter result as link = queryString. Example: teamName=3&grizlies
+
+            return string.Join("&", queryStringsDictionary
+                .Where(x => !defaultValue.Contains(x.Value.ToLower()))
+                .Select(x => $"{x.Key}={System.Web.HttpUtility.UrlEncode(x.Value)}").ToArray());
+        }
+
+        private async Task SearchForTeams()
+        {
+            await LoadTeams();
+        }
+
+        private async Task Clear()
+        {
+            filterTeamsDTO.TeamName = "";
+            filterTeamsDTO.GameId = 0;
+            filterTeamsDTO.EasternConference = false;
+            filterTeamsDTO.WesternConference = false;
+
+            await LoadTeams(); //is a must have when i press clear btn to display all teams again
+        }
+
+
+        private async Task TeamNameKeyPress(KeyboardEventArgs e)
+        {
+            if (e.Key == "Enter")
+            {
+                await SearchForTeams();
+            }
+        }
+    }-->

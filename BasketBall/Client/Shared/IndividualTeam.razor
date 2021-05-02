@@ -1,0 +1,14 @@
+﻿<div class="individual-team-container">
+    <a href="@teamURL">
+        <img src="@Team.TeamLogo" alt="Logo" class="team-logo" />
+    </a>
+    <p><a href="@teamURL">@Team.TeamName</a></p>
+    <div>
+        <a class="btn btn-info" href="/teams/edit/@Team.TeamId">Edit</a>
+        <button type="button" class="btn btn-danger"
+                @onclick="@(() => DeleteTeam.InvokeAsync(Team))">
+            Delete
+        </button>
+
+    </div>
+</div>

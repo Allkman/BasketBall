@@ -1,0 +1,40 @@
+﻿@page "/"
+@page "/index"
+@inject ITeamRepository teamRepository
+
+<div>
+    <h3>Eastern Conference</h3>
+    <TeamsList Teams="easternTeam" />
+</div>
+<div>
+    <h3>Western Conference</h3>
+    <TeamsList Teams="westernTeam" />
+</div>
+
+<CustomTypeahead SearchMethod="SearchMethod">
+    <ResultTemplate>
+        @context
+    </ResultTemplate>
+</CustomTypeahead>
+
+@code{
+    private List<Team> easternTeam;
+    private List<Team> westernTeam;
+
+    private async Task<IEnumerable<string>> SearchMethod(string searchText)
+    {
+        await Task.Delay(2000);
+        if (searchText == "test")
+        {
+            return Enumerable.Empty<string>();
+        }
+        return new List<string>() { "Algirdas", "Cernevicius" };
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        var response = await teamRepository.GetIndexPageDTO();
+        easternTeam = response.EasternConference;
+        westernTeam = response.WesternConference;
+    }
+}

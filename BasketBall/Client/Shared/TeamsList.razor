@@ -1,0 +1,9 @@
+﻿<div class="teams-container">
+    <GenericList List="Teams">
+        <ElementTemplate Context="team">
+            <IndividualTeam Team="team"
+                            DeleteTeam="DeleteTeam" @key="team.TeamId" />  @*with key i let compiler know that one individual team is different from other by means of their Id(TeamId)*@
+                        </ElementTemplate>
+                    </GenericList>
+                </div>
+

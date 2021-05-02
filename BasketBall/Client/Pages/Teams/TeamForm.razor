@@ -1,0 +1,106 @@
+﻿@inject IPersonRepository personRepository
+<EditForm Model="Team" OnValidSubmit="OnDataAnnotationsValidated">
+    <DataAnnotationsValidator />
+    <div class="form-group">
+        <label>Team Name:</label>
+        <div>
+            <InputText class="form-control" @bind-Value="@Team.TeamName" />
+            <ValidationMessage For="@(() => Team.TeamName)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <InputImg Label="Picture" OnSelectedImage="OnLogoSelected" ImageURL="@imageURL" />
+    </div>
+    <div class="form-group">
+        <label>Eastern Conference</label>
+        <div>
+            <InputCheckbox @bind-Value="Team.EasternConference" />
+            <ValidationMessage For="@(() => Team.EasternConference)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Western Conference</label>
+        <div>
+            <InputCheckbox @bind-Value="Team.WesternConference" />
+            <ValidationMessage For="@(() => Team.WesternConference)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Games:</label>
+        <div>
+            <MultipleSelectorComp Selected="Selected" NoSelected="NotSelected"></MultipleSelectorComp>
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Players:</label>
+        <div>
+            <MultipleSelectorTypeahead Context="person"
+                                       SearchMethod="SearchMethod" SelectedElements="SelectedPlayers">
+                <MyResultTemplate>
+                    <img style="width: 50px;" src="@person.Picture" />
+                    @person.FullName
+                </MyResultTemplate>
+                <MyListTemplate>
+                    @person.FullName / <input type="text" placeholder="Character" @bind="person.Position" />
+                </MyListTemplate>
+            </MultipleSelectorTypeahead>
+        </div>
+    </div>
+    <button class="btn btn-primary" type="submit">Save Changes</button>
+</EditForm>
+
+@code {
+    [Parameter] public Team Team { get; set; }
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+    [Parameter] public List<Game> SelectedGames { get; set; } = new List<Game>(); //for when editing a Team it needs to know which Game where already seleted
+    [Parameter] public List<Game> NotSelectedGames { get; set; } = new List<Game>();
+    [Parameter] public List<Person> SelectedPlayers { get; set; } = new List<Person>();
+
+    private string imageURL;
+    private List<MultipleSelectorStruct> Selected = new List<MultipleSelectorStruct>();
+    private List<MultipleSelectorStruct> NotSelected = new List<MultipleSelectorStruct>();
+
+
+    private void DisableCheckbox()
+    {
+
+    }
+
+    protected override void OnInitialized()
+    {
+        Selected = SelectedGames.Select(x => new MultipleSelectorStruct(x.GameId.ToString(), x.GameTitle)).ToList();
+        NotSelected = NotSelectedGames.Select(x => new MultipleSelectorStruct(x.GameId.ToString(), x.GameTitle)).ToList();
+        if (!string.IsNullOrEmpty(Team.TeamLogo))
+        {
+            imageURL = Team.TeamLogo; //if there is a picture
+                                      //if the user does not select a new picture, it wont be sent to the API, if he does then we set current to null
+            Team.TeamLogo = null;
+        }
+    }
+    private async Task<IEnumerable<Person>> SearchMethod(string searchText)
+    {
+        return await personRepository.GetPeopleByName(searchText);
+    }
+    private async Task OnLogoSelected(string imageBase64)
+    {
+        Team.TeamLogo = imageBase64;
+        imageURL = null; //in case the user changes the picture
+        Console.WriteLine(imageBase64);
+    }
+
+    private async Task OnDataAnnotationsValidated()
+    {
+        Team.TeamGames = Selected // from MultipleSelectorComp
+            .Select(x => new TeamGame { GameId = int.Parse(x.Key) }).ToList();
+
+        Team.TeamPlayers = SelectedPlayers
+            .Select(x => new TeamPlayer { PersonId = x.Id, Position = x.Position }).ToList();
+
+        if (!string.IsNullOrWhiteSpace(Team.TeamLogo))
+        {
+            imageURL = null;
+        }
+
+        await OnValidSubmit.InvokeAsync(null);
+    }
+}

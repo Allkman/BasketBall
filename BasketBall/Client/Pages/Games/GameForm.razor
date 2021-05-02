@@ -1,0 +1,23 @@
+﻿<EditForm Model="Game" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator />
+    <div class="form-group">
+        <label>Game Title:</label>
+        <div>
+            <InputText class="form-control" @bind-Value="@Game.GameTitle" />
+            <ValidationMessage For="@(() => Game.GameTitle)" />
+        </div>
+        <div>
+            <InputNumber class="form-control" @bind-Value="@Game.WinScore" />
+            <ValidationMessage For="@(() => Game.WinScore)" />
+        </div>
+    </div>
+
+    <button class="btn btn-success" type="submit">Save Changes</button>
+</EditForm>
+
+@code { 
+    [Parameter]
+    public Game Game { get; set; }
+    [Parameter]
+    public EventCallback OnValidSubmit { get; set; } 
+    }
