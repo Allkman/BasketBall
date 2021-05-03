@@ -1,4 +1,5 @@
-﻿using BasketBall.Client.Repositories.Interfaces;
+﻿using BasketBall.Client.Helpers;
+using BasketBall.Client.Repositories.Interfaces;
 using BasketBall.Client.Services.Interfaces;
 using BasketBall.Shared.Models;
 using System;
@@ -17,25 +18,15 @@ namespace BasketBall.Client.Repositories
         {
             _httpService = httpService;
         }
-        public async Task<List<Game>> GetGames()
-        {
-            var response = await _httpService.Get<List<Game>>(url);
-            if (!response.Success)
-            {
-                throw new ApplicationException(await response.GetBody());
-            }
-            //return the list of games that is received from webAPI
-            return response.Response;
-        }
         public async Task<Game> GetGame(int gameId)
         {
-            var response = await _httpService.Get<Game>($"{url}/{gameId}");
-            if (!response.Success)
-            {
-                throw new ApplicationException(await response.GetBody());
-            }            
-            return response.Response;
+            return await _httpService.GetHelper<Game>($"{url}/{gameId}");
         }
+        public async Task<List<Game>> GetGames()
+        {
+            return await _httpService.GetHelper<List<Game>>($"{url}");
+        }
+        
         public async Task CreateGame(Game game)
         {
             var response = await _httpService.Post(url, game);
@@ -48,7 +39,16 @@ namespace BasketBall.Client.Repositories
         public async Task UpdateGame(Game game)
         {
             var response = await _httpService.Put(url, game);
-            //if the response is not successfull throw exeption and display error message with body
+            
+            if (!response.Success)
+            {
+                throw new ApplicationException(await response.GetBody());
+            }
+        }
+        public async Task DeleteGame(int gameId)
+        {
+            var response = await _httpService.Delete($"{url}/{gameId}");
+
             if (!response.Success)
             {
                 throw new ApplicationException(await response.GetBody());

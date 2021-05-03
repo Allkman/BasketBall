@@ -10,7 +10,10 @@ namespace BasketBall.Client.Repositories.Interfaces
     public interface ITeamRepository
     {
         Task<int> CreateTeam(Team team);
+        Task DeleteTeam(int teamId);
         Task<IndexPageDTO> GetIndexPageDTO();
+        Task<TeamUpdateDTO> GetTeamForUpdate(int teamId);
         Task<TeamProfileDTO> GetTeamProfileDTO(int teamId);
+        Task UpdateTeam(Team team);
     }
 }

@@ -12,5 +12,6 @@ namespace BasketBall.Client.Repositories.Interfaces
         Task<Game> GetGame(int gameId);
         Task<List<Game>> GetGames();
         Task UpdateGame(Game game);
+        Task DeleteGame(int gameId);
     }
 }

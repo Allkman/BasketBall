@@ -51,5 +51,17 @@ namespace BasketBall.Server.Controllers
             await _dbContext.SaveChangesAsync();
             return NoContent();
         }
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(int gameId)
+        {
+            var game = await _dbContext.Games.FirstOrDefaultAsync(x => x.GameId == gameId);
+            if (game == null)
+            {
+                return NotFound();
+            }
+            _dbContext.Remove(game);
+            await _dbContext.SaveChangesAsync();
+            return NoContent();
+        }
     }
 }

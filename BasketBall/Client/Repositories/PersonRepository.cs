@@ -24,12 +24,7 @@ namespace BasketBall.Client.Repositories
         }
         public async Task<List<Person>> GetPeople()
         {
-            var response = await _httpService.Get<List<Person>>(url);
-            if (!response.Success)
-            {
-                throw new ApplicationException(await response.GetBody());
-            }
-            return response.Response;
+            return await _httpService.GetHelper<List<Person>>($"{url}");
         }
         public async Task<List<Person>> GetPeopleByName(string name)
         {
@@ -53,6 +48,15 @@ namespace BasketBall.Client.Repositories
         {
             var response = await _httpService.Put(url, person);
             //if the response is not successfull throw exeption and display error message with body
+            if (!response.Success)
+            {
+                throw new ApplicationException(await response.GetBody());
+            }
+        }
+        public async Task DeletePerson(int personId)
+        {
+            var response = await _httpService.Delete($"{url}/{personId}");
+
             if (!response.Success)
             {
                 throw new ApplicationException(await response.GetBody());

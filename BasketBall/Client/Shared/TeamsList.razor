@@ -1,4 +1,5 @@
-﻿<div class="teams-container">
+﻿@inject ITeamRepository teamRepository;
+<div class="teams-container">
     <GenericList List="Teams">
         <ElementTemplate Context="team">
             <IndividualTeam Team="team"

@@ -12,7 +12,7 @@ namespace BasketBall.Client.Shared
 {
     public partial class TeamsList
     {
-        [Inject] IJSRuntime js { get; set; }  
+        [Inject] IJSRuntime js { get; set; }        
        
         [Parameter] public List<Team> Teams { get; set; }
 
@@ -23,7 +23,7 @@ namespace BasketBall.Client.Shared
 
             if (confirmed)
             {
-                //await teamRepository.DeleteTeam(team.TeamId);
+                await teamRepository.DeleteTeam(team.TeamId);
                 Teams.Remove(team);
             }
         }

@@ -1,0 +1,33 @@
+﻿@page "/teams/edit/{TeamId:int}"
+@inject ITeamRepository teamRepository
+@inject NavigationManager navigationManager
+
+<h3>Edit Team</h3>
+
+@if (team != null)
+{
+    <TeamForm Team="team" OnValidSubmit="Edit" NotSelectedGames="NotSelectedGames"
+               SelectedGames="SelectedGames"
+               SelectedPlayers="SelectedPlayers" />
+}
+
+@code { [Parameter] public int TeamId { get; set; }
+    private Team team;
+    private List<Game> NotSelectedGames;
+    private List<Game> SelectedGames;
+    private List<Person> SelectedPlayers;
+
+    protected async override Task OnInitializedAsync()
+    {
+        var model = await teamRepository.GetTeamForUpdate(TeamId);
+        team = model.Team;
+        SelectedPlayers = model.TeamPlayers;
+        SelectedGames = model.SelectedGames;
+        NotSelectedGames = model.NotSelectedGames;
+    }
+
+    private async Task Edit()
+    {
+        await teamRepository.UpdateTeam(team);
+        navigationManager.NavigateTo($"team/{TeamId}/{team.TeamName.Replace(" ", "-")}");
+    } }

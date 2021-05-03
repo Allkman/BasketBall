@@ -67,6 +67,12 @@ namespace BasketBall.Client.Services
             var response = await _httpClient.PutAsync(url, stringContent); // sending HttpPust to db
             return new HttpResponseWrapper<object>(null, response.IsSuccessStatusCode, response);
         }
+        public async Task<HttpResponseWrapper<object>> Delete(string url)
+        {
+            var responseHTTP = await _httpClient.DeleteAsync(url);
+            return new HttpResponseWrapper<object>(null, responseHTTP.IsSuccessStatusCode, responseHTTP);
+        }
+
         private async Task<T> Deserialize<T>(HttpResponseMessage httpResponse, JsonSerializerOptions options)
         {
             var responseString = await httpResponse.Content.ReadAsStringAsync();

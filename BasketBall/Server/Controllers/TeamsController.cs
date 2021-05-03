@@ -1,4 +1,5 @@
-﻿using BasketBall.Server.Data;
+﻿using AutoMapper;
+using BasketBall.Server.Data;
 using BasketBall.Server.Services.Interfaces;
 using BasketBall.Shared.DTOs;
 using BasketBall.Shared.Models;
@@ -17,12 +18,17 @@ namespace BasketBall.Server.Controllers
     {
         private readonly ApplicationDbContext _dbContext;
         private readonly IFileStorageService _fileStorageService;
+        private readonly IMapper _mapper;
         private string containerName = "teams";
+        private string fileFormat = ".png";
 
-        public TeamsController(ApplicationDbContext dbContext, IFileStorageService fileStorageService)
+        public TeamsController(ApplicationDbContext dbContext, 
+            IFileStorageService fileStorageService,
+            IMapper mapper)
         {
             _dbContext = dbContext;
             _fileStorageService = fileStorageService;
+            _mapper = mapper;
         }
         [HttpGet] //specific method to display two lists in IndexPage ("/")
         public async Task<ActionResult<IndexPageDTO>> Get()
@@ -67,7 +73,28 @@ namespace BasketBall.Server.Controllers
 
             return model;
         }
+        [HttpGet("update/{id}")]
+        public async Task<ActionResult<TeamUpdateDTO>> PutGet(int teamId)
+        {
+            //reusing above code
+            var teamActionResult = await Get(teamId);
+            if (teamActionResult.Result is NotFoundResult)
+            {
+                return NotFound();
+            }
+            var teamProfileDTO = teamActionResult.Value;
+            var selectedGamesIds = teamProfileDTO.Games.Select(x => x.GameId).ToList();
+            var notSelectedGames = await _dbContext.Games
+                .Where(x => !selectedGamesIds.Contains(x.GameId))
+                .ToListAsync();
+            var model = new TeamUpdateDTO();
+            model.Team = teamProfileDTO.Team;
+            model.SelectedGames = teamProfileDTO.Games;
+            model.NotSelectedGames = notSelectedGames;
+            model.TeamPlayers = teamProfileDTO.Players;
 
+            return model;
+        }
         [HttpPost]
         //Bellow I am creating an endpoint that is responding to HttpPost
         public async Task<ActionResult<int>> Post(Team team)
@@ -75,7 +102,7 @@ namespace BasketBall.Server.Controllers
             if (!string.IsNullOrWhiteSpace(team.TeamLogo))
             {
                 var teamLogo = Convert.FromBase64String(team.TeamLogo);
-                team.TeamLogo = await _fileStorageService.SaveFile(teamLogo, "png", containerName);
+                team.TeamLogo = await _fileStorageService.SaveFile(teamLogo, fileFormat, containerName);
             }
             //to specify the order in which players appear on team
             if (team.TeamPlayers !=null)
@@ -88,6 +115,51 @@ namespace BasketBall.Server.Controllers
             _dbContext.Add(team);
             await _dbContext.SaveChangesAsync();
             return team.TeamId; //just to signify that it was created
+        }
+        [HttpPut]
+        public async Task<ActionResult> Put(Team team)
+        {
+            //same logic like in PeopleController
+
+            var teamDB = await _dbContext.Teams.FirstOrDefaultAsync(x => x.TeamId == team.TeamId);
+            if (teamDB == null)
+            {
+                return NotFound();
+            }
+            //change Picture only if new file was selected. Display the current picture while in edit page
+            teamDB = _mapper.Map(team, teamDB);
+            if (!string.IsNullOrWhiteSpace(team.TeamLogo))
+            {
+                var teamLogo = Convert.FromBase64String(team.TeamLogo);
+                teamDB.TeamLogo = await _fileStorageService.EditFile(teamLogo, fileFormat, containerName, teamDB.TeamLogo);
+            }
+
+            await _dbContext.Database.ExecuteSqlInterpolatedAsync($"delete from TeamPlayers where TeamId = {team.TeamId}; delete from TeamGames where TeamId = {team.TeamId}");
+            if (team.TeamPlayers != null)
+            {
+                for (int i = 0; i < team.TeamPlayers.Count; i++)
+                {
+                    team.TeamPlayers[i].Order = i + 1;
+                }
+            }
+
+            teamDB.TeamPlayers = team.TeamPlayers;
+            teamDB.TeamGames = team.TeamGames;
+
+            await _dbContext.SaveChangesAsync();
+            return NoContent();
+        }
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(int teamId)
+        {
+            var team = await _dbContext.Teams.FirstOrDefaultAsync(x => x.TeamId == teamId);
+            if (team == null)
+            {
+                return NotFound();
+            }
+            _dbContext.Remove(team);
+            await _dbContext.SaveChangesAsync();
+            return NoContent();
         }
     }
 }
