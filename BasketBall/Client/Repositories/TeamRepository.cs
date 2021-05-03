@@ -1,4 +1,5 @@
-﻿using BasketBall.Client.Repositories.Interfaces;
+﻿using BasketBall.Client.Helpers;
+using BasketBall.Client.Repositories.Interfaces;
 using BasketBall.Client.Services.Interfaces;
 using BasketBall.Shared.DTOs;
 using BasketBall.Shared.Models;
@@ -18,25 +19,16 @@ namespace BasketBall.Client.Repositories
         {
             _httpService = httpService;
         }
-        //--------------reusing this method in two bellow methods
-        private async Task<T> Get<T>(string url)
-        {
-            var response = await _httpService.Get<T>(url);
-            //if the response is not successfull throw exeption and display error message with body
-            if (!response.Success)
-            {
-                throw new ApplicationException(await response.GetBody());
-            }
-            return response.Response;
-        }
+        //--------------reusing method from Helper!!
+        
         public async Task<IndexPageDTO> GetIndexPageDTO()
         {
 
-            return await Get<IndexPageDTO>(url);
+            return await _httpService.GetHelper<IndexPageDTO>(url);
         }
         public async Task<TeamProfileDTO> GetTeamProfileDTO(int teamId)
         {
-            return await Get<TeamProfileDTO>($"{url}/{teamId}");
+            return await _httpService.GetHelper<TeamProfileDTO>($"{url}/{teamId}");
         }
         //-----------
         public async Task<int> CreateTeam(Team team)

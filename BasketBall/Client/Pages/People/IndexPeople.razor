@@ -1,5 +1,6 @@
 ﻿@page "/people"
 @inject IPersonRepository personRepository
+
 <h3>Index People</h3>
 
 <div class="form-group">
@@ -19,7 +20,7 @@
                 {
                     <tr>
                         <td>
-                            <a class="btn btn-success">Edit</a>
+                            <a class="btn btn-success" href="/person/edit/@item.Id">Edit</a>
                             <button class="btn btn-danger">Delete</button>
                         </td>
                         <td>@item.FullName</td>

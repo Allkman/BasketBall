@@ -11,5 +11,6 @@ namespace BasketBall.Client.Repositories.Interfaces
         Task CreatePerson(Person person);
         Task<List<Person>> GetPeople();
         Task<List<Person>> GetPeopleByName(string name);
+        Task UpdatePerson(Person person);
     }
 }

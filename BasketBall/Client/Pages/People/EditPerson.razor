@@ -1,5 +1,5 @@
 ﻿@page "/person/edit/{PersonId:int}"
-
+@inject IPersonRepository personRepository
 <h3>Edit Person</h3>
 
 @if (person != null)
@@ -13,9 +13,9 @@
 
     private Person person;
 
-    protected override void OnInitialized()
+    protected async override Task OnInitializedAsync()
     {
-        
+        person = await personRepository.GetPersonById(PersonId);
     }
 
     private void Edit()

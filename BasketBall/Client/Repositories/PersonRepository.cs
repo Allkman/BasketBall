@@ -1,4 +1,5 @@
-﻿using BasketBall.Client.Repositories.Interfaces;
+﻿using BasketBall.Client.Helpers;
+using BasketBall.Client.Repositories.Interfaces;
 using BasketBall.Client.Services.Interfaces;
 using BasketBall.Shared.Models;
 using System;
@@ -16,6 +17,10 @@ namespace BasketBall.Client.Repositories
         public PersonRepository(IHttpService httpService)
         {
             _httpService = httpService;
+        }
+        public async Task<Person> GetPersonById(int personId)
+        {
+            return await _httpService.GetHelper<Person>($"{url}/{personId}");
         }
         public async Task<List<Person>> GetPeople()
         {
@@ -44,5 +49,14 @@ namespace BasketBall.Client.Repositories
                 throw new ApplicationException(await response.GetBody());
             }
         }
-    }
+        public async Task UpdatePerson(Person person)
+        {
+            var response = await _httpService.Put(url, person);
+            //if the response is not successfull throw exeption and display error message with body
+            if (!response.Success)
+            {
+                throw new ApplicationException(await response.GetBody());
+            }
+        }
+    } 
 }
