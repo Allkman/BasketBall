@@ -27,7 +27,7 @@ namespace BasketBall.Server.Controllers
         [HttpGet] //specific method to display two lists in IndexPage ("/")
         public async Task<ActionResult<IndexPageDTO>> Get()
         {
-            var limit = 5; //there are total 15 teams per conference
+            var limit = 5; //there are total 15 teams per conference = 3 pages
             var easternTeam = await _dbContext.Teams
                 .Where(x => x.EasternConference).Take(limit)
                 .OrderByDescending(x => x.TeamName).ToListAsync();
@@ -77,6 +77,7 @@ namespace BasketBall.Server.Controllers
                 var teamLogo = Convert.FromBase64String(team.TeamLogo);
                 team.TeamLogo = await _fileStorageService.SaveFile(teamLogo, "png", containerName);
             }
+            //to specify the order in which players appear on team
             if (team.TeamPlayers !=null)
             {
                 for (int i = 0; i < team.TeamPlayers.Count; i++)

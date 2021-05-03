@@ -24,11 +24,30 @@ namespace BasketBall.Client.Repositories
             {
                 throw new ApplicationException(await response.GetBody());
             }
+            //return the list of games that is received from webAPI
+            return response.Response;
+        }
+        public async Task<Game> GetGame(int gameId)
+        {
+            var response = await _httpService.Get<Game>($"{url}/{gameId}");
+            if (!response.Success)
+            {
+                throw new ApplicationException(await response.GetBody());
+            }            
             return response.Response;
         }
         public async Task CreateGame(Game game)
         {
             var response = await _httpService.Post(url, game);
+            //if the response is not successfull throw exeption and display error message with body
+            if (!response.Success)
+            {
+                throw new ApplicationException(await response.GetBody());
+            }
+        }
+        public async Task UpdateGame(Game game)
+        {
+            var response = await _httpService.Put(url, game);
             //if the response is not successfull throw exeption and display error message with body
             if (!response.Success)
             {

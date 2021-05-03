@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31205.134
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasketBall.Server", "BasketBall\Server\BasketBall.Server.csproj", "{EA4ED592-DFFF-4DE1-BB85-9617521BFAB7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BasketBall.Server", "BasketBall\Server\BasketBall.Server.csproj", "{EA4ED592-DFFF-4DE1-BB85-9617521BFAB7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasketBall.Client", "BasketBall\Client\BasketBall.Client.csproj", "{C6F2706F-2F0C-40B2-AF6F-6E9093F2999C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BasketBall.Client", "BasketBall\Client\BasketBall.Client.csproj", "{C6F2706F-2F0C-40B2-AF6F-6E9093F2999C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasketBall.Shared", "BasketBall\Shared\BasketBall.Shared.csproj", "{62524DAF-AF5E-45D7-BD6F-91CD0B1749AC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BasketBall.Shared", "BasketBall\Shared\BasketBall.Shared.csproj", "{62524DAF-AF5E-45D7-BD6F-91CD0B1749AC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

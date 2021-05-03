@@ -15,14 +15,15 @@
 
     protected async override Task OnInitializedAsync()
     {
-       notSelectedGames = await gameRepository.GetGames();
+        notSelectedGames = await gameRepository.GetGames();
     }
     private async Task SaveTeam()
     {
         try
         {
             var teamId = await teamRepository.CreateTeam(team);
-            navigationManager.NavigateTo($"team/{teamId}/{team.TeamName.Replace(" ", "-")}"); //i need to redirect it to TeamProfile component
+            //i need to redirect it to TeamProfile component
+            navigationManager.NavigateTo($"team/{teamId}/{team.TeamName.Replace(" ", "-")}");
         }
         catch (Exception ex)
         {

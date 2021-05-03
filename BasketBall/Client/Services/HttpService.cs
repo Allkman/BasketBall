@@ -59,6 +59,14 @@ namespace BasketBall.Client.Services
                 return new HttpResponseWrapper<TResponse>(default, false, response);
             }             
         }
+        public async Task<HttpResponseWrapper<object>> Put<T>(string url, T data)
+        {
+            var dataJson = JsonSerializer.Serialize(data);
+            var stringContent = new StringContent(dataJson, Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PutAsync(url, stringContent); // sending HttpPust to db
+            return new HttpResponseWrapper<object>(null, response.IsSuccessStatusCode, response);
+        }
         private async Task<T> Deserialize<T>(HttpResponseMessage httpResponse, JsonSerializerOptions options)
         {
             var responseString = await httpResponse.Content.ReadAsStringAsync();

@@ -31,5 +31,25 @@ namespace BasketBall.Server.Controllers
         {
             return await _dbContext.Games.ToListAsync();
         }
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Game>> Get(int gameId)
+        {
+            var game = await _dbContext.Games.FirstOrDefaultAsync(x => x.GameId == gameId);
+            if(game == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return game;
+            }
+        }
+        [HttpPut]
+        public async Task<ActionResult>Put(Game game)
+        {
+            _dbContext.Attach(game).State = EntityState.Modified;
+            await _dbContext.SaveChangesAsync();
+            return NoContent();
+        }
     }
 }

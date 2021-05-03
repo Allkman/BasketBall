@@ -1,0 +1,25 @@
+﻿@page "/game/edit/{GameId:int}"
+@inject IGameRepository gameRepository
+@inject NavigationManager navigationManager
+
+<h3>Edit Genre</h3>
+
+@if (game != null)
+{
+    <GameForm Game="game" OnValidSubmit="Edit" />
+}
+
+@code { 
+    [Parameter] public int GameId { get; set; }
+    public Game game;
+
+    protected override async Task OnInitializedAsync()
+    {
+        game = await gameRepository.GetGame(GameId);
+    }
+
+    private void Edit()
+    {
+        gameRepository.UpdateGame(game);
+        navigationManager.NavigateTo("games");
+    } }
