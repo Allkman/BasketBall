@@ -1,6 +1,7 @@
 ﻿using BasketBall.Client.Helpers;
 using BasketBall.Client.Repositories.Interfaces;
 using BasketBall.Client.Services.Interfaces;
+using BasketBall.Shared.DTOs;
 using BasketBall.Shared.Models;
 using System;
 using System.Collections.Generic;
@@ -22,9 +23,9 @@ namespace BasketBall.Client.Repositories
         {
             return await _httpService.GetHelper<Person>($"{url}/{personId}");
         }
-        public async Task<List<Person>> GetPeople()
+        public async Task<PaginatedResponse<List<Person>>> GetPeople(PaginationDTO paginationDTO)
         {
-            return await _httpService.GetHelper<List<Person>>($"{url}");
+            return await _httpService.GetHelper<List<Person>>(url, paginationDTO);
         }
         public async Task<List<Person>> GetPeopleByName(string name)
         {

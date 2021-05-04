@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BasketBall.Server.Data;
+using BasketBall.Server.Helpers;
 using BasketBall.Server.Services.Interfaces;
 using BasketBall.Shared.DTOs;
 using BasketBall.Shared.Models;
@@ -48,9 +49,9 @@ namespace BasketBall.Server.Controllers
             return response; //response is of type T = IndexPageDTO
         }
         [HttpGet("{id}")]
-        public async Task<ActionResult<TeamProfileDTO>> Get(int teamId)
+        public async Task<ActionResult<TeamProfileDTO>> Get(int id)
         {
-            var team = await _dbContext.Teams.Where(x => x.TeamId == teamId)
+            var team = await _dbContext.Teams.Where(x => x.TeamId == id)
                 .Include(x => x.TeamGames).ThenInclude(x => x.Game) //bring info of related model(in this case TeamGames)
                 .Include(x => x.TeamPlayers).ThenInclude(x => x.Person) // ---||--- (BasketBallPlayer)
                 .FirstOrDefaultAsync();//getting the team if data matches
@@ -73,11 +74,46 @@ namespace BasketBall.Server.Controllers
 
             return model;
         }
-        [HttpGet("update/{id}")]
-        public async Task<ActionResult<TeamUpdateDTO>> PutGet(int teamId)
+        [HttpPost("filter")]
+        public async Task<ActionResult<List<Team>>> Filter(FilterTeamsDTO filterTeamsDTO)
         {
-            //reusing above code
-            var teamActionResult = await Get(teamId);
+            var teamsQueryable = _dbContext.Teams.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(filterTeamsDTO.TeamName))
+            {
+                teamsQueryable = teamsQueryable
+                    .Where(x => x.TeamName.Contains(filterTeamsDTO.TeamName));
+            }
+
+            if (filterTeamsDTO.EasternConference)
+            {
+                teamsQueryable = teamsQueryable.Where(x => x.EasternConference);
+            }
+            if (filterTeamsDTO.WesternConference)
+            {
+                teamsQueryable = teamsQueryable.Where(x => x.WesternConference);
+            }
+
+
+            if (filterTeamsDTO.GameId != 0)
+            {
+                teamsQueryable = teamsQueryable
+                    .Where(x => x.TeamGames.Select(y => y.GameId)
+                    .Contains(filterTeamsDTO.GameId));
+            }
+
+            await HttpContext.InsertPaginationParametersInResponse(teamsQueryable,
+                filterTeamsDTO.RecordsPerPage);
+
+            var teams = await teamsQueryable.Paginate(filterTeamsDTO.Pagination).ToListAsync();
+
+            return teams;
+        }
+        [HttpGet("update/{id}")]
+        public async Task<ActionResult<TeamUpdateDTO>> PutGet(int id)
+        {
+            
+            var teamActionResult = await Get(id);
             if (teamActionResult.Result is NotFoundResult)
             {
                 return NotFound();

@@ -1,4 +1,5 @@
-﻿using BasketBall.Shared.Models;
+﻿using BasketBall.Shared.DTOs;
+using BasketBall.Shared.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,7 @@ namespace BasketBall.Client.Repositories.Interfaces
         Task CreateGame(Game game);
         Task<Game> GetGame(int gameId);
         Task<List<Game>> GetGames();
+        Task<PaginatedResponse<List<Game>>> GetIndexedGames(PaginationDTO paginationDTO);
         Task UpdateGame(Game game);
         Task DeleteGame(int gameId);
     }

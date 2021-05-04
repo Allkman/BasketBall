@@ -1,4 +1,5 @@
 ﻿using BasketBall.Client.Services.Interfaces;
+using BasketBall.Shared.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,27 @@ namespace BasketBall.Client.Helpers
             }
             return response.Response;
         }
+        public static async Task<PaginatedResponse<T>> GetHelper<T>(this IHttpService httpService, string url,
+           PaginationDTO paginationDTO)
+        {
+            string newURL = "";
+            if (url.Contains("?")) //if url has "?" it means it already has queryStrings
+            {
+                newURL = $"{url}&page={paginationDTO.Page}&recordsPerPage={paginationDTO.RecordsPerPage}";
+            }
+            else
+            {
+                newURL = $"{url}?page={paginationDTO.Page}&recordsPerPage={paginationDTO.RecordsPerPage}";
+            }
 
+            var httpResponse = await httpService.Get<T>(newURL);
+            var totalAmountOfPages = int.Parse(httpResponse.HttpResponseMessage.Headers.GetValues("totalAmountOfPages").FirstOrDefault());
+            var paginatedResponse = new PaginatedResponse<T>
+            {
+                Response = httpResponse.Response,
+                TotalAmountOfPages = totalAmountOfPages
+            };
+            return paginatedResponse;
+        }
     }
 }

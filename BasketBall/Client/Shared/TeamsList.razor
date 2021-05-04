@@ -2,9 +2,10 @@
 <div class="teams-container">
     <GenericList List="Teams">
         <ElementTemplate Context="team">
+            @*with key i let compiler know that one individual team is different from other by means of their Id(TeamId)*@
             <IndividualTeam Team="team"
-                            DeleteTeam="DeleteTeam" @key="team.TeamId" />  @*with key i let compiler know that one individual team is different from other by means of their Id(TeamId)*@
-                        </ElementTemplate>
+                            DeleteTeam="DeleteTeam" @key="team.TeamId" />
+        </ElementTemplate>
                     </GenericList>
                 </div>
 

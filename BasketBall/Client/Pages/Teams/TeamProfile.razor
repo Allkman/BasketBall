@@ -21,7 +21,8 @@ else
         }
     }
     <div style="display:flex">
-        <span style="display: inline-block; margin-right:5px;"><img src="@model.Team.TeamLogo" style="width: 225px; height:315px;" /></span>
+        <span style="display: inline-block; margin-right:5px;">
+        <img src="@model.Team.TeamLogo" style="width: 225px; height:315px;" /></span>
     </div>
     <div style="margin-top:10px;">
         <h3>Players</h3>
@@ -33,7 +34,7 @@ else
                 <span style="display:inline-block;width:200px;">
                     <a href="/person/@player.Id/@player.FullName.Replace(" ", "-")">@player.FullName</a>
                 </span>
-                <span style="display:inline-block; width:30px;">-= Playing positions =-</span>
+                <span style="display:inline-block; width:100px;">-=Positions=</span>
                 <span>@player.Position</span>
             </div>
 	}
@@ -53,7 +54,6 @@ else
 
     protected async override Task OnInitializedAsync()
     {
-        model = await teamRepository.GetTeamProfileDTO(TeamId);
-        Console.WriteLine($"The Id of the team is: {TeamId}");
+        model = await teamRepository.GetTeamProfileDTO(TeamId);        
     }
 }

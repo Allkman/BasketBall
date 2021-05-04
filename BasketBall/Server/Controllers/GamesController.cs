@@ -1,4 +1,6 @@
 ﻿using BasketBall.Server.Data;
+using BasketBall.Server.Helpers;
+using BasketBall.Shared.DTOs;
 using BasketBall.Shared.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -27,9 +29,15 @@ namespace BasketBall.Server.Controllers
             return Ok(); //just to signify that it was created
         }
         [HttpGet]
-        public async Task<ActionResult<List<Game>>> Get()
+        //public async Task<ActionResult<List<Game>>> Get()
+        //{
+        //    return await _dbContext.Games.ToListAsync();
+        //}
+        public async Task<ActionResult<List<Game>>> Get([FromQuery] PaginationDTO paginationDTO)
         {
-            return await _dbContext.Games.ToListAsync();
+            var queryable = _dbContext.Games.AsQueryable();
+            await HttpContext.InsertPaginationParametersInResponse(queryable, paginationDTO.RecordsPerPage);
+            return await queryable.Paginate(paginationDTO).ToListAsync();
         }
         [HttpGet("{id}")]
         public async Task<ActionResult<Game>> Get(int gameId)
@@ -38,11 +46,8 @@ namespace BasketBall.Server.Controllers
             if(game == null)
             {
                 return NotFound();
-            }
-            else
-            {
-                return game;
-            }
+            }           
+            return game;            
         }
         [HttpPut]
         public async Task<ActionResult>Put(Game game)

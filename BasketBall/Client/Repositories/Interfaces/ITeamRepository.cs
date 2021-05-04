@@ -14,6 +14,7 @@ namespace BasketBall.Client.Repositories.Interfaces
         Task<IndexPageDTO> GetIndexPageDTO();
         Task<TeamUpdateDTO> GetTeamForUpdate(int teamId);
         Task<TeamProfileDTO> GetTeamProfileDTO(int teamId);
+        Task<PaginatedResponse<List<Team>>> GetTeamsFiltered(FilterTeamsDTO filterTeamsDTO);
         Task UpdateTeam(Team team);
     }
 }

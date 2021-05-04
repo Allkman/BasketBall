@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using BasketBall.Server.Data;
+using BasketBall.Server.Helpers;
 using BasketBall.Server.Services.Interfaces;
+using BasketBall.Shared.DTOs;
 using BasketBall.Shared.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -39,10 +41,12 @@ namespace BasketBall.Server.Controllers
                 .Take(searchResultLimit)
                 .ToListAsync();
         }
-        [HttpGet]
-        public async Task<ActionResult<List<Person>>> Get()
+        [HttpGet]        
+        public async Task<ActionResult<List<Person>>> Get([FromQuery] PaginationDTO paginationDTO)
         {
-            return await _dbContext.People.ToListAsync();
+            var queryable = _dbContext.People.AsQueryable();
+            await HttpContext.InsertPaginationParametersInResponse(queryable, paginationDTO.RecordsPerPage);
+            return await queryable.Paginate(paginationDTO).ToListAsync();
         }
         [HttpGet("{id}")]
         public async Task<ActionResult<Person>> Get(int personId)

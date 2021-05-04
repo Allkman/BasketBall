@@ -20,7 +20,7 @@ namespace BasketBall.Client.Repositories
             _httpService = httpService;
         }
         //--------------reusing method from Helper!!
-        
+
         public async Task<IndexPageDTO> GetIndexPageDTO()
         {
 
@@ -35,6 +35,20 @@ namespace BasketBall.Client.Repositories
             return await _httpService.GetHelper<TeamProfileDTO>($"{url}/{teamId}");
         }
         //-----------
+        public async Task<PaginatedResponse<List<Team>>> GetTeamsFiltered(FilterTeamsDTO filterTeamsDTO)
+        {
+            //sending FilterTeamsDTO to the server and receiving List<Team> 
+            var responseHTTP = await _httpService.Post<FilterTeamsDTO, List<Team>>($"{url}/filter", filterTeamsDTO);
+            var totalAmountOfPages = int.Parse(responseHTTP.HttpResponseMessage.Headers.GetValues("totalAmountOfPages").FirstOrDefault());
+            var paginatedResponse = new PaginatedResponse<List<Team>>()
+            {
+                Response = responseHTTP.Response,
+                TotalAmountOfPages = totalAmountOfPages,
+            };
+            return paginatedResponse;
+        }
+
+
         public async Task<int> CreateTeam(Team team)
         {
             var response = await _httpService.Post<Team, int>(url, team);

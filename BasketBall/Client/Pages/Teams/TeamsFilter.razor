@@ -2,16 +2,16 @@
 @inject ITeamRepository teamRepository
 @inject IGameRepository gameRepository
 @inject NavigationManager navigationManager
-<!--<EditForm Model="filterTeamsDTO">
+<EditForm Model="filterTeamsDTO">
 <div class="form-inline">
     <div class="form-group mb-2">
         <label for="teamName" class="sr-only">Team Name</label>
         <input type="text" class="form-control" id="teamName" placeholder="Team Name"
                @bind-value="filterTeamsDTO.TeamName" @bind-value:event="oninput"
-               @onkeypress="@((KeyboardEventArgs e) => TeamNameKeyPress(e))" />-->
+               @onkeypress="@((KeyboardEventArgs e) => TeamNameKeyPress(e))" />
 @* :event is for when user types in team name the result would be updated on the time of input, and then onkeypress (Enter) will display results *@
 
-<!--</div>
+</div>
     </div>
     <div class="form-group" mx-sm-3 mb-2>
         <select class="form-control" @bind="filterTeamsDTO.GameId">
@@ -37,8 +37,11 @@
         <button type="button" class="btn btn-danger mb-2" @onclick="Clear">Clear</button>
     </div>
 </EditForm>
+
 <TeamsList Teams="teams"></TeamsList>
+
 <Pagination CurrentPage="filterTeamsDTO.Page" TotalAmountOfPages="totalAmountOfPages"></Pagination>
+
     @code {
         private FilterTeamsDTO filterTeamsDTO = new FilterTeamsDTO(); //initializing to avoid null reference exeption
         private int totalAmountOfPages; //assining in LoadTeams();
@@ -51,11 +54,16 @@
             games = await gameRepository.GetGames();
             if (queryStrings != null)
             {
-                FillFilterWithQuesryStrings(queryStrings);
+                FillFilterWithQueryStrings(queryStrings);
             }
             await LoadTeams();
         }
-        private void FillFilterWithQuesryStrings(Dictionary<string,string> queryStrings)
+        /// <summary>
+        /// If I share searchRusults link with someone This bellow method will add all "filter(How I was searching)" values 
+        /// and will display to other user when he will open the link
+        /// </summary>
+        /// <param name="queryStrings"></param>
+        private void FillFilterWithQueryStrings(Dictionary<string,string> queryStrings)
         {
             if (queryStrings.ContainsKey("gameId"))
             {
@@ -143,4 +151,4 @@
                 await SearchForTeams();
             }
         }
-    }-->
+    }

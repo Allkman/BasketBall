@@ -1,4 +1,5 @@
 ﻿@inject IPersonRepository personRepository
+
 <EditForm Model="Team" OnValidSubmit="OnDataAnnotationsValidated">
     <DataAnnotationsValidator />
     <div class="form-group">
@@ -41,7 +42,7 @@
                     @person.FullName
                 </MyResultTemplate>
                 <MyListTemplate>
-                    @person.FullName / <input type="text" placeholder="Character" @bind="person.Position" />
+                    @person.FullName / <input type="text" placeholder="Position" @bind="person.Position" />
                 </MyListTemplate>
             </MultipleSelectorTypeahead>
         </div>
@@ -60,12 +61,6 @@
     private List<MultipleSelectorStruct> Selected = new List<MultipleSelectorStruct>();
     private List<MultipleSelectorStruct> NotSelected = new List<MultipleSelectorStruct>();
 
-
-    private void DisableCheckbox()
-    {
-
-    }
-
     protected override void OnInitialized()
     {
         Selected = SelectedGames.Select(x => new MultipleSelectorStruct(x.GameId.ToString(), x.GameTitle)).ToList();
@@ -81,7 +76,7 @@
     {
         return await personRepository.GetPeopleByName(searchText);
     }
-    private async Task OnLogoSelected(string imageBase64)
+    private void OnLogoSelected(string imageBase64)
     {
         Team.TeamLogo = imageBase64;
         imageURL = null; //in case the user changes the picture
