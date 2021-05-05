@@ -40,7 +40,7 @@
 
 <TeamsList Teams="teams"></TeamsList>
 
-<Pagination CurrentPage="filterTeamsDTO.Page" TotalAmountOfPages="totalAmountOfPages"></Pagination>
+<Pagination CurrentPage="filterTeamsDTO.Page" TotalAmountOfPages="totalAmountOfPages" SelectedPage="SelectedPage" />
 
     @code {
         private FilterTeamsDTO filterTeamsDTO = new FilterTeamsDTO(); //initializing to avoid null reference exeption
@@ -62,7 +62,7 @@
         /// If I share searchRusults link with someone This bellow method will add all "filter(How I was searching)" values 
         /// and will display to other user when he will open the link
         /// </summary>
-        /// <param name="queryStrings"></param>
+
         private void FillFilterWithQueryStrings(Dictionary<string,string> queryStrings)
         {
             if (queryStrings.ContainsKey("gameId"))
@@ -102,7 +102,7 @@
             var quesryString = GenerateQueryString();
             if (!string.IsNullOrWhiteSpace(quesryString))
             {
-                quesryString = $"{quesryString}";
+                quesryString = $"?{quesryString}";
                 navigationManager.NavigateTo("/teams/search" + quesryString);
             }
 

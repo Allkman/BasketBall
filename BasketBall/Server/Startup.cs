@@ -33,8 +33,6 @@ namespace BasketBall.Server
             services.AddAutoMapper(typeof(Startup));
 
             services.AddScoped<IFileStorageService, FileStorageService>();
-            services.AddMvc();
-
 
             services.AddControllersWithViews()
                 //with this code i m fixing a circular references of my models exp: Games -> TeamGames -> Games -> TeamGames .....

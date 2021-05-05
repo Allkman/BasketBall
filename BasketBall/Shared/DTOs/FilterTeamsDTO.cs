@@ -8,8 +8,8 @@ namespace BasketBall.Shared.DTOs
 {
     public class FilterTeamsDTO
     {
-        public int Page { get; set; }
-        public int RecordsPerPage { get; set; }
+        public int Page { get; set; } = 1;
+        public int RecordsPerPage { get; set; } = 10;
         public PaginationDTO Pagination
         {
             get { return new PaginationDTO() { Page = Page, RecordsPerPage = RecordsPerPage }; }

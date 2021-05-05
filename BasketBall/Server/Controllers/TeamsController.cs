@@ -53,7 +53,7 @@ namespace BasketBall.Server.Controllers
         {
             var team = await _dbContext.Teams.Where(x => x.TeamId == id)
                 .Include(x => x.TeamGames).ThenInclude(x => x.Game) //bring info of related model(in this case TeamGames)
-                .Include(x => x.TeamPlayers).ThenInclude(x => x.Person) // ---||--- (BasketBallPlayer)
+                .Include(x => x.TeamPlayers).ThenInclude(x => x.Person) // ---||--- (for a new TeamPlayer model)
                 .FirstOrDefaultAsync();//getting the team if data matches
 
             if (team == null) { return NotFound(); }
@@ -84,7 +84,6 @@ namespace BasketBall.Server.Controllers
                 teamsQueryable = teamsQueryable
                     .Where(x => x.TeamName.Contains(filterTeamsDTO.TeamName));
             }
-
             if (filterTeamsDTO.EasternConference)
             {
                 teamsQueryable = teamsQueryable.Where(x => x.EasternConference);
@@ -93,15 +92,12 @@ namespace BasketBall.Server.Controllers
             {
                 teamsQueryable = teamsQueryable.Where(x => x.WesternConference);
             }
-
-
             if (filterTeamsDTO.GameId != 0)
             {
                 teamsQueryable = teamsQueryable
                     .Where(x => x.TeamGames.Select(y => y.GameId)
                     .Contains(filterTeamsDTO.GameId));
             }
-
             await HttpContext.InsertPaginationParametersInResponse(teamsQueryable,
                 filterTeamsDTO.RecordsPerPage);
 
@@ -186,9 +182,9 @@ namespace BasketBall.Server.Controllers
             return NoContent();
         }
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(int teamId)
+        public async Task<ActionResult> Delete(int id)
         {
-            var team = await _dbContext.Teams.FirstOrDefaultAsync(x => x.TeamId == teamId);
+            var team = await _dbContext.Teams.FirstOrDefaultAsync(x => x.TeamId == id);
             if (team == null)
             {
                 return NotFound();

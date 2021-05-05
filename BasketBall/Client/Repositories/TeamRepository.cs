@@ -24,17 +24,27 @@ namespace BasketBall.Client.Repositories
         public async Task<IndexPageDTO> GetIndexPageDTO()
         {
 
-            return await _httpService.GetHelper<IndexPageDTO>(url);
+            return await Get<IndexPageDTO>(url);
         }
-        public async Task<TeamUpdateDTO> GetTeamForUpdate(int teamId)
+       
+        public async Task<TeamProfileDTO> GetTeamProfileDTO(int id)
         {
-            return await _httpService.GetHelper<TeamUpdateDTO>($"{url}/update/{teamId}");
-        }
-        public async Task<TeamProfileDTO> GetTeamProfileDTO(int teamId)
-        {
-            return await _httpService.GetHelper<TeamProfileDTO>($"{url}/{teamId}");
+            return await Get<TeamProfileDTO>($"{url}/{id}");
         }
         //-----------
+        private async Task<T> Get<T>(string url)
+        {
+            var response = await _httpService.Get<T>(url);
+            if (!response.Success)
+            {
+                throw new ApplicationException(await response.GetBody());
+            }
+            return response.Response;
+        }
+        public async Task<TeamUpdateDTO> GetTeamForUpdate(int id)
+        {
+            return await _httpService.GetHelper<TeamUpdateDTO>($"{url}/update/{id}");
+        }
         public async Task<PaginatedResponse<List<Team>>> GetTeamsFiltered(FilterTeamsDTO filterTeamsDTO)
         {
             //sending FilterTeamsDTO to the server and receiving List<Team> 
@@ -47,8 +57,6 @@ namespace BasketBall.Client.Repositories
             };
             return paginatedResponse;
         }
-
-
         public async Task<int> CreateTeam(Team team)
         {
             var response = await _httpService.Post<Team, int>(url, team);
@@ -68,9 +76,9 @@ namespace BasketBall.Client.Repositories
                 throw new ApplicationException(await response.GetBody());
             }
         }
-        public async Task DeleteTeam(int teamId)
+        public async Task DeleteTeam(int id)
         {
-            var response = await _httpService.Delete($"{url}/{teamId}");
+            var response = await _httpService.Delete($"{url}/{id}");
 
             if (!response.Success)
             {

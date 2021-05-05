@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BasketBall.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210502115915_Initial")]
+    [Migration("20210505095140_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

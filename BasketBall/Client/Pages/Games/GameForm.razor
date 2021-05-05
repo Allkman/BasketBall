@@ -3,11 +3,11 @@
     <div class="form-group">
         <label>Game Title:</label>
         <div>
-            <InputText class="form-control" @bind-Value="@Game.GameTitle" />
+            <InputText class="form-control" style="width:300px;" @bind-Value="@Game.GameTitle" />
             <ValidationMessage For="@(() => Game.GameTitle)" />
         </div>
         <div>
-            <InputNumber class="form-control" @bind-Value="@Game.WinScore" />
+            <InputNumber class="form-control" style="width:70px;" @bind-Value="@Game.WinScore" />
             <ValidationMessage For="@(() => Game.WinScore)" />
         </div>
     </div>

@@ -19,9 +19,9 @@ namespace BasketBall.Client.Repositories
         {
             _httpService = httpService;
         }
-        public async Task<Person> GetPersonById(int personId)
+        public async Task<Person> GetPersonById(int id)
         {
-            return await _httpService.GetHelper<Person>($"{url}/{personId}");
+            return await _httpService.GetHelper<Person>($"{url}/{id}");
         }
         public async Task<PaginatedResponse<List<Person>>> GetPeople(PaginationDTO paginationDTO)
         {
@@ -54,9 +54,9 @@ namespace BasketBall.Client.Repositories
                 throw new ApplicationException(await response.GetBody());
             }
         }
-        public async Task DeletePerson(int personId)
+        public async Task DeletePerson(int id)
         {
-            var response = await _httpService.Delete($"{url}/{personId}");
+            var response = await _httpService.Delete($"{url}/{id}");
 
             if (!response.Success)
             {

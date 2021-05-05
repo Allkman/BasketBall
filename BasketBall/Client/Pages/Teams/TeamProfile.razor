@@ -13,6 +13,7 @@ else
     {
         if (i < model.Games.Count - 1)
         {
+            @*If this is not the last Game for the team, place "," *@
             @linkGame(model.Games[i])<text>, </text>
         }
         else
@@ -24,20 +25,20 @@ else
         <span style="display: inline-block; margin-right:5px;">
         <img src="@model.Team.TeamLogo" style="width: 225px; height:315px;" /></span>
     </div>
-    <div style="margin-top:10px;">
-        <h3>Players</h3>
-        <div style="display: flex; flex-direction:column">
+    <div style="margin-top: 10px;">
+        <h3>Players: </h3>
+        <div style="display: flex; flex-direction: column">
             @foreach (var player in model.Players)
-	{
-            <div style="margin-bottom: 2px;">
-                <img style="width:50px;" src="@player.Picture" />
-                <span style="display:inline-block;width:200px;">
+            {
+                <div style="margin-bottom: 2px;">
+                    <img style="width: 50px;" src="@player.Picture" />
+                    <span style="display:inline-block;width: 200px;">
                     <a href="/person/@player.Id/@player.FullName.Replace(" ", "-")">@player.FullName</a>
-                </span>
-                <span style="display:inline-block; width:100px;">-=Positions=</span>
-                <span>@player.Position</span>
-            </div>
-	}
+                    </span>
+                    <span style="display:inline-block; width: 45px;">...</span>
+                    <span>@player.Position</span>
+                </div>
+            }
         </div>
     </div>
 }

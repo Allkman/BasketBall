@@ -11,7 +11,7 @@ namespace BasketBall.Shared.Models
         public int PersonId { get; set; }
         public int TeamId { get; set; }
         public Person Person { get; set; } //related with BasketBallPlayer
-        public Team Team { get; set; }
+        public Team Team { get; set; } = new Team();
         public string Position { get; set; }
         public int Order { get; set; } //to visualize Starting five players
 

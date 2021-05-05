@@ -19,17 +19,13 @@ namespace BasketBall.Client.Repositories
         {
             _httpService = httpService;
         }
-        public async Task<Game> GetGame(int gameId)
+        public async Task<Game> GetGame(int id)
         {
-            return await _httpService.GetHelper<Game>($"{url}/{gameId}");
+            return await _httpService.GetHelper<Game>($"{url}/{id}");
         }
         public async Task<List<Game>> GetGames()
         {
             return await _httpService.GetHelper<List<Game>>($"{url}");
-        }
-        public async Task<PaginatedResponse<List<Game>>> GetIndexedGames(PaginationDTO paginationDTO)
-        {
-            return await _httpService.GetHelper<List<Game>>(url, paginationDTO);
         }
         public async Task CreateGame(Game game)
         {
@@ -49,9 +45,9 @@ namespace BasketBall.Client.Repositories
                 throw new ApplicationException(await response.GetBody());
             }
         }
-        public async Task DeleteGame(int gameId)
+        public async Task DeleteGame(int id)
         {
-            var response = await _httpService.Delete($"{url}/{gameId}");
+            var response = await _httpService.Delete($"{url}/{id}");
 
             if (!response.Success)
             {

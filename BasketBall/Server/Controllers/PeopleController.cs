@@ -49,9 +49,9 @@ namespace BasketBall.Server.Controllers
             return await queryable.Paginate(paginationDTO).ToListAsync();
         }
         [HttpGet("{id}")]
-        public async Task<ActionResult<Person>> Get(int personId)
+        public async Task<ActionResult<Person>> Get(int id)
         {
-            var person = await _dbContext.People.FirstOrDefaultAsync(x => x.Id == personId);
+            var person = await _dbContext.People.FirstOrDefaultAsync(x => x.Id == id);
             if (person == null)
             {
                 return NotFound();
@@ -92,9 +92,9 @@ namespace BasketBall.Server.Controllers
             return NoContent();
         }
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(int personId)
+        public async Task<ActionResult> Delete(int id)
         {
-            var person = await _dbContext.People.FirstOrDefaultAsync(x => x.Id == personId);
+            var person = await _dbContext.People.FirstOrDefaultAsync(x => x.Id == id);
             if (person == null)
             {
                 return NotFound();

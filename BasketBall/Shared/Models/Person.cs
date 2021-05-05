@@ -14,7 +14,7 @@ namespace BasketBall.Shared.Models
         [Required]
         public string FullName { get; set; }
         public string Picture { get; set; }                
-        public List<TeamPlayer> TeamPlayers { get; set; } = new List<TeamPlayer>();
+        public List<TeamPlayer> TeamPlayers { get; set; } = new List<TeamPlayer>();        
         [NotMapped]
         public string Position { get; set; }
         public override bool Equals(object obj)

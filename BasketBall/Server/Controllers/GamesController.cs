@@ -29,20 +29,14 @@ namespace BasketBall.Server.Controllers
             return Ok(); //just to signify that it was created
         }
         [HttpGet]
-        //public async Task<ActionResult<List<Game>>> Get()
-        //{
-        //    return await _dbContext.Games.ToListAsync();
-        //}
-        public async Task<ActionResult<List<Game>>> Get([FromQuery] PaginationDTO paginationDTO)
+        public async Task<ActionResult<List<Game>>> Get()
         {
-            var queryable = _dbContext.Games.AsQueryable();
-            await HttpContext.InsertPaginationParametersInResponse(queryable, paginationDTO.RecordsPerPage);
-            return await queryable.Paginate(paginationDTO).ToListAsync();
+            return await _dbContext.Games.ToListAsync();
         }
         [HttpGet("{id}")]
-        public async Task<ActionResult<Game>> Get(int gameId)
+        public async Task<ActionResult<Game>> Get(int id)
         {
-            var game = await _dbContext.Games.FirstOrDefaultAsync(x => x.GameId == gameId);
+            var game = await _dbContext.Games.FirstOrDefaultAsync(x => x.GameId == id);
             if(game == null)
             {
                 return NotFound();
@@ -57,9 +51,9 @@ namespace BasketBall.Server.Controllers
             return NoContent();
         }
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(int gameId)
+        public async Task<ActionResult> Delete(int id)
         {
-            var game = await _dbContext.Games.FirstOrDefaultAsync(x => x.GameId == gameId);
+            var game = await _dbContext.Games.FirstOrDefaultAsync(x => x.GameId == id);
             if (game == null)
             {
                 return NotFound();
