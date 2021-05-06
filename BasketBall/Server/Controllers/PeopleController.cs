@@ -4,6 +4,8 @@ using BasketBall.Server.Helpers;
 using BasketBall.Server.Services.Interfaces;
 using BasketBall.Shared.DTOs;
 using BasketBall.Shared.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -15,6 +17,7 @@ namespace BasketBall.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")] //this controller is in ..../api/people
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class PeopleController : ControllerBase
     {
         private readonly ApplicationDbContext _dbContext;

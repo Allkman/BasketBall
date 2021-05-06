@@ -1,6 +1,8 @@
 ﻿@page "/person/edit/{PersonId:int}"
 @inject IPersonRepository personRepository
 @inject NavigationManager navigationManager
+@attribute [Authorize]
+
 <h3>Edit Person</h3>
 
 @if (person != null)
@@ -8,19 +10,18 @@
 <PersonForm Person="person" OnValidSubmit="Edit" />
 }
 
-@code { 
-    [Parameter] 
-    public int PersonId { get; set; }
+@code { [Parameter]
+            public int PersonId { get; set; }
 
-    private Person person;
+            private Person person;
 
-    protected async override Task OnInitializedAsync()
-    {
-        person = await personRepository.GetPersonById(PersonId);
-    }
+            protected async override Task OnInitializedAsync()
+            {
+                person = await personRepository.GetPersonById(PersonId);
+            }
 
-    private async Task Edit()
-    {
-        await personRepository.UpdatePerson(person);
-        navigationManager.NavigateTo("people");
-    } }
+            private async Task Edit()
+            {
+                await personRepository.UpdatePerson(person);
+                navigationManager.NavigateTo("people");
+            } }

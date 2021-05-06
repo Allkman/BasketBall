@@ -1,20 +1,26 @@
 ﻿@using System.Net.Http
 @using System.Net.Http.Json
+@using System.Text.Json;
+@using System.Text.Json.Serialization;
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Routing
 @using Microsoft.AspNetCore.Components.Web
 @using Microsoft.AspNetCore.Components.Web.Virtualization
 @using Microsoft.AspNetCore.Components.WebAssembly.Http
 @using Microsoft.JSInterop
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Authorization
+
 @using BasketBall.Client
 @using BasketBall.Client.Shared
 @using BasketBall.Client.Helpers
+@using BasketBall.Client.Helpers.Interfaces
 @using BasketBall.Client.Services
 @using BasketBall.Client.Services.Interfaces
 @using BasketBall.Client.Repositories
 @using BasketBall.Client.Repositories.Interfaces
 
+
 @using BasketBall.Shared.Models
 @using BasketBall.Shared.DTOs
-@using System.Text.Json;
-@using System.Text.Json.Serialization;
+

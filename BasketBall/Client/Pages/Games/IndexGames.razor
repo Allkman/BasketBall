@@ -1,5 +1,6 @@
 ﻿@page "/games"
 @inject IGameRepository gameRepository
+@attribute [Authorize]
 
 <h3>Index Games</h3>
 
@@ -20,41 +21,38 @@
             <tbody>
                 @foreach (var item in games)
                 {
-                    <tr>
-                        <td>
-                            <a class="btn btn-success" href="/game/edit/@item.GameId">Edit</a>
-                            <button class="btn btn-danger" @onclick="@(()=> DeleteGame(item.GameId))">Delete</button>
-                        </td>
-                        <td style="text-align:center">@item.GameTitle</td>
-                        <td style="text-align:center">@item.WinScore</td>
-                    </tr>
-                }
+<tr>
+    <td>
+        <a class="btn btn-success" href="/game/edit/@item.GameId">Edit</a>
+        <button class="btn btn-danger" @onclick="@(()=> DeleteGame(item.GameId))">Delete</button>
+    </td>
+    <td style="text-align:center">@item.GameTitle</td>
+    <td style="text-align:center">@item.WinScore</td>
+</tr>                }
             </tbody>
         </table>
     </WholeListTemplate>
 </GenericList>
-@code {
-    private List<Game> games;
+@code { private List<Game> games;
 
 
-    protected override async Task OnInitializedAsync()
-    {
-        try
-        {
-            games = await gameRepository.GetGames();
-        }
-        catch (Exception ex)
-        {
+            protected override async Task OnInitializedAsync()
+            {
+                try
+                {
+                    games = await gameRepository.GetGames();
+                }
+                catch (Exception ex)
+                {
 
-            Console.WriteLine(ex.Message);
-        }
-    }
+                    Console.WriteLine(ex.Message);
+                }
+            }
 
 
-    private async Task DeleteGame(int id)
-    {
-        await gameRepository.DeleteGame(id);
-        games = await gameRepository.GetGames();
+            private async Task DeleteGame(int id)
+            {
+                await gameRepository.DeleteGame(id);
+                games = await gameRepository.GetGames();
 
-    }
-}
+            } }

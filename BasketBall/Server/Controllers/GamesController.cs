@@ -2,6 +2,8 @@
 using BasketBall.Server.Helpers;
 using BasketBall.Shared.DTOs;
 using BasketBall.Shared.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -13,6 +15,7 @@ namespace BasketBall.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")] //this controller is in ..../api/games
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class GamesController : ControllerBase
     {
         private readonly ApplicationDbContext _dbContext;
@@ -29,6 +32,7 @@ namespace BasketBall.Server.Controllers
             return Ok(); //just to signify that it was created
         }
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<List<Game>>> Get()
         {
             return await _dbContext.Games.ToListAsync();

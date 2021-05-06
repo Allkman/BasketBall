@@ -1,7 +1,11 @@
+using BasketBall.Client.Auth;
+using BasketBall.Client.Helpers;
+using BasketBall.Client.Helpers.Interfaces;
 using BasketBall.Client.Repositories;
 using BasketBall.Client.Repositories.Interfaces;
 using BasketBall.Client.Services;
 using BasketBall.Client.Services.Interfaces;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,7 +25,7 @@ namespace BasketBall.Client
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
 
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+            builder.Services.AddSingleton(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
             ConfigureServices(builder.Services);
             await builder.Build().RunAsync();
@@ -32,6 +36,20 @@ namespace BasketBall.Client
             services.AddScoped<IGameRepository, GameRepository>();
             services.AddScoped<IPersonRepository, PersonRepository>();
             services.AddScoped<ITeamRepository, TeamRepository>();
+            services.AddScoped<IAccountsRepository, AccountsRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IDisplayMessage, DisplayMessage>();
+
+            services.AddAuthorizationCore();
+
+            services.AddScoped<JWTAuthenticationStateProvider>();    
+
+            services.AddScoped<AuthenticationStateProvider, JWTAuthenticationStateProvider>(
+                provider => provider.GetRequiredService<JWTAuthenticationStateProvider>());
+            services.AddScoped<ILoginService, JWTAuthenticationStateProvider>(
+                provider => provider.GetRequiredService<JWTAuthenticationStateProvider>());
+
+            services.AddScoped<TokenRenewer>();
         }
     }
 }

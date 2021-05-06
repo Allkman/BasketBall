@@ -4,6 +4,9 @@ using BasketBall.Server.Helpers;
 using BasketBall.Server.Services.Interfaces;
 using BasketBall.Shared.DTOs;
 using BasketBall.Shared.Models;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -15,6 +18,7 @@ namespace BasketBall.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")] //this controller is in ..../api/people
+    [Authorize(AuthenticationSchemes =JwtBearerDefaults.AuthenticationScheme)]
     public class TeamsController : ControllerBase
     {
         private readonly ApplicationDbContext _dbContext;
@@ -32,6 +36,7 @@ namespace BasketBall.Server.Controllers
             _mapper = mapper;
         }
         [HttpGet] //specific method to display two lists in IndexPage ("/")
+        [AllowAnonymous]
         public async Task<ActionResult<IndexPageDTO>> Get()
         {
             var limit = 5; //there are total 15 teams per conference = 3 pages
@@ -49,6 +54,7 @@ namespace BasketBall.Server.Controllers
             return response; //response is of type T = IndexPageDTO
         }
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<ActionResult<TeamProfileDTO>> Get(int id)
         {
             var team = await _dbContext.Teams.Where(x => x.TeamId == id)
@@ -75,6 +81,7 @@ namespace BasketBall.Server.Controllers
             return model;
         }
         [HttpPost("filter")]
+        [AllowAnonymous]
         public async Task<ActionResult<List<Team>>> Filter(FilterTeamsDTO filterTeamsDTO)
         {
             var teamsQueryable = _dbContext.Teams.AsQueryable();

@@ -1,4 +1,7 @@
 ﻿@inherits LayoutComponentBase
+@inject BasketBall.Client.Auth.TokenRenewer tokenRenewer
+@inject NavigationManager navigationManager  
+@inject IJSRuntime js
 
 <div class="page">
     <div class="sidebar">
@@ -7,6 +10,7 @@
 
     <div class="main">
         <div class="top-row px-4">
+            <LoginLinks />
             <a href="http://blazor.net" target="_blank" class="ml-md-auto">About</a>
         </div>
 
@@ -15,3 +19,23 @@
         </div>
     </div>
 </div>
+
+@code{     
+    [CascadingParameter] public Task<AuthenticationState> AuthenticationState { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        //passing an instance of the MainLayout with "this"
+        await js.InitializeInactivityTimer(DotNetObjectReference.Create(this));
+        tokenRenewer.Initiate();
+    }
+    [JSInvokable]
+    public async Task Logout()
+    {
+        var authState = await AuthenticationState;
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            navigationManager.NavigateTo("logout");
+        }
+    }
+}

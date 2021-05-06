@@ -2,6 +2,14 @@
 @page "/index"
 @inject ITeamRepository teamRepository
 
+<AuthorizeView Roles="Admin">
+    <Authorized>
+        You are authorized @context.User.Identity.Name
+    </Authorized>
+    <NotAuthorized>
+        Not authorized
+    </NotAuthorized>
+</AuthorizeView>
 <div>
     <h3>Eastern Conference</h3>
     <TeamsList Teams="easternTeam" />

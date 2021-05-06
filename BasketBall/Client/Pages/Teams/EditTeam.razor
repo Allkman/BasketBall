@@ -1,15 +1,15 @@
 ﻿@page "/teams/edit/{TeamId:int}"
 @inject ITeamRepository teamRepository
 @inject NavigationManager navigationManager
+@attribute [Authorize]
 
 <h3>Edit Team</h3>
 
 @if (team != null)
 {
-    <TeamForm Team="team" OnValidSubmit="Edit" NotSelectedGames="NotSelectedGames"
-               SelectedGames="SelectedGames"
-               SelectedPlayers="SelectedPlayers" />
-}
+<TeamForm Team="team" OnValidSubmit="Edit" NotSelectedGames="NotSelectedGames"
+          SelectedGames="SelectedGames"
+          SelectedPlayers="SelectedPlayers" />}
 
 @code { [Parameter] public int TeamId { get; set; }
     private Team team;

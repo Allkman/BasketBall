@@ -4,11 +4,16 @@
     </a>
     <p><a href="@teamURL">@Team.TeamName</a></p>
     <div>
-        <a class="btn btn-info" href="/teams/edit/@Team.TeamId">Edit</a>
-        <button type="button" class="btn btn-danger"
-                @onclick="@(() => DeleteTeam.InvokeAsync(Team))">
-            Delete
-        </button>
+        <AuthorizeView>
+            <Authorized>
+                <a class="btn btn-info" href="/teams/edit/@Team.TeamId">Edit</a>
+                <button type="button" class="btn btn-danger"
+                        @onclick="@(() => DeleteTeam.InvokeAsync(Team))">
+                    Delete
+                </button>
+            </Authorized>
+        </AuthorizeView>
+        
 
     </div>
 </div>

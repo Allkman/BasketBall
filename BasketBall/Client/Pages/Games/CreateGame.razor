@@ -1,26 +1,25 @@
 ﻿@page "/game/create"
 @inject IGameRepository gameRepository
 @inject NavigationManager navigationManager
+@attribute [Authorize]
 
 <h3>Create Game</h3>
 <GameForm Game="game" OnValidSubmit="Create" />
 
-@code{
-    private Game game = new Game();
+@code{ private Game game = new Game();
 
-    private async Task Create()
-    {
-        Console.WriteLine("Creating Game");
-        Console.WriteLine(game.GameTitle);
+            private async Task Create()
+            {
+                Console.WriteLine("Creating Game");
+                Console.WriteLine(game.GameTitle);
 
-        try
-        {
-            await gameRepository.CreateGame(game);
-            navigationManager.NavigateTo("games");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-        }
-    }
-}
+                try
+                {
+                    await gameRepository.CreateGame(game);
+                    navigationManager.NavigateTo("games");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            } }

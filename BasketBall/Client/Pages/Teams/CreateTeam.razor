@@ -2,33 +2,30 @@
 @inject NavigationManager navigationManager
 @inject ITeamRepository teamRepository
 @inject IGameRepository gameRepository
+@attribute [Authorize]
 
 @if (notSelectedGames != null)
 {
-    <TeamForm Team="team" OnValidSubmit="SaveTeam" NotSelectedGames="notSelectedGames" />
+<TeamForm Team="team" OnValidSubmit="SaveTeam" NotSelectedGames="notSelectedGames" />}
 
-}
+@code { private Team team = new Team();
+            private List<Game> notSelectedGames;
 
-@code {
-    private Team team = new Team();
-    private List<Game> notSelectedGames;
+            protected async override Task OnInitializedAsync()
+            {
+                notSelectedGames = await gameRepository.GetGames();
+            }
+            private async Task SaveTeam()
+            {
+                try
+                {
+                    var teamId = await teamRepository.CreateTeam(team);
+                    //i need to redirect it to TeamProfile component
+                    navigationManager.NavigateTo($"team/{teamId}/{team.TeamName.Replace(" ", "-")}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
 
-    protected async override Task OnInitializedAsync()
-    {
-        notSelectedGames = await gameRepository.GetGames();
-    }
-    private async Task SaveTeam()
-    {
-        try
-        {
-            var teamId = await teamRepository.CreateTeam(team);
-            //i need to redirect it to TeamProfile component
-            navigationManager.NavigateTo($"team/{teamId}/{team.TeamName.Replace(" ", "-")}");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-        }
-
-    }
-}
+            } }
