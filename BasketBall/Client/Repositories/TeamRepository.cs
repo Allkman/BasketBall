@@ -24,23 +24,14 @@ namespace BasketBall.Client.Repositories
         public async Task<IndexPageDTO> GetIndexPageDTO()
         {
 
-            return await Get<IndexPageDTO>(url);
+            return await _httpService.GetHelper<IndexPageDTO>(url, includeToken: false);
         }
        
         public async Task<TeamProfileDTO> GetTeamProfileDTO(int id)
         {
-            return await Get<TeamProfileDTO>($"{url}/{id}");
+            return await _httpService.GetHelper<TeamProfileDTO>($"{url}/{id}", includeToken: false);
         }
         //-----------
-        private async Task<T> Get<T>(string url)
-        {
-            var response = await _httpService.Get<T>(url);
-            if (!response.Success)
-            {
-                throw new ApplicationException(await response.GetBody());
-            }
-            return response.Response;
-        }
         public async Task<TeamUpdateDTO> GetTeamForUpdate(int id)
         {
             return await _httpService.GetHelper<TeamUpdateDTO>($"{url}/update/{id}");
@@ -48,7 +39,7 @@ namespace BasketBall.Client.Repositories
         public async Task<PaginatedResponse<List<Team>>> GetTeamsFiltered(FilterTeamsDTO filterTeamsDTO)
         {
             //sending FilterTeamsDTO to the server and receiving List<Team> 
-            var responseHTTP = await _httpService.Post<FilterTeamsDTO, List<Team>>($"{url}/filter", filterTeamsDTO);
+            var responseHTTP = await _httpService.Post<FilterTeamsDTO, List<Team>>($"{url}/filter", filterTeamsDTO, includeToken: false);
             var totalAmountOfPages = int.Parse(responseHTTP.HttpResponseMessage.Headers.GetValues("totalAmountOfPages").FirstOrDefault());
             var paginatedResponse = new PaginatedResponse<List<Team>>()
             {

@@ -1,5 +1,5 @@
 ﻿@inherits LayoutComponentBase
-@inject BasketBall.Client.Auth.TokenRenewer tokenRenewer
+
 @inject NavigationManager navigationManager  
 @inject IJSRuntime js
 
@@ -27,7 +27,7 @@
     {
         //passing an instance of the MainLayout with "this"
         await js.InitializeInactivityTimer(DotNetObjectReference.Create(this));
-        tokenRenewer.Initiate();
+       
     }
     [JSInvokable]
     public async Task Logout()

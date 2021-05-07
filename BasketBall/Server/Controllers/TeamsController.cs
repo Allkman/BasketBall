@@ -18,7 +18,7 @@ namespace BasketBall.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")] //this controller is in ..../api/people
-    [Authorize(AuthenticationSchemes =JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(Roles = "Admin")]
     public class TeamsController : ControllerBase
     {
         private readonly ApplicationDbContext _dbContext;

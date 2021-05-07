@@ -15,7 +15,7 @@ namespace BasketBall.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")] //this controller is in ..../api/games
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(Roles = "Admin")]
     public class GamesController : ControllerBase
     {
         private readonly ApplicationDbContext _dbContext;

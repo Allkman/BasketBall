@@ -25,7 +25,8 @@ namespace BasketBall.Client.Repositories
         }
         public async Task<List<Game>> GetGames()
         {
-            return await _httpService.GetHelper<List<Game>>($"{url}");
+            //omit(skip) the token, when annonymous user tries to filter Teams in Search page, by Game
+            return await _httpService.GetHelper<List<Game>>(url, includeToken : false);
         }
         public async Task CreateGame(Game game)
         {

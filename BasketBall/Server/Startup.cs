@@ -1,6 +1,7 @@
 using BasketBall.Server.Data;
 using BasketBall.Server.Services;
 using BasketBall.Server.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -13,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using System;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Text;
 
@@ -22,6 +24,9 @@ namespace BasketBall.Server
     {
         public Startup(IConfiguration configuration)
         {
+            //clearing a mapping of InboundClaims so that the role field in Jwt won`t get edited.
+            //Fixed 403 forbidden error while accessing database items.
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
             Configuration = configuration;
         }
         public IConfiguration Configuration { get; }
@@ -33,22 +38,20 @@ namespace BasketBall.Server
             services.AddDbContext<ApplicationDbContext>(options =>
              options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddIdentity<IdentityUser, IdentityRole>()
-               .AddEntityFrameworkStores<ApplicationDbContext>()
-               .AddDefaultTokenProviders();
+            services.AddDefaultIdentity<IdentityUser>(options =>
+            {
+                options.SignIn.RequireConfirmedAccount = false; //not using it now
+            }
+                )
+               .AddRoles<IdentityRole>()
+               .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(
-                    Encoding.UTF8.GetBytes(Configuration["jwt:key"])),
-                    ClockSkew = TimeSpan.Zero
-                });
+            services.AddIdentityServer()
+                .AddApiAuthorization<IdentityUser, ApplicationDbContext>()
+                .AddProfileService<IdentityProfileService>();
+
+            services.AddAuthentication()
+                .AddIdentityServerJwt();
 
             services.AddAutoMapper(typeof(Startup));
 
@@ -84,6 +87,8 @@ namespace BasketBall.Server
             //#1 -- IMPORTANT to put Authentication first !!
             app.UseAuthentication();
             //#2
+            app.UseIdentityServer();
+            //#3
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
