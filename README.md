@@ -1,7 +1,7 @@
 ## Table of contents
 * [General info](#general-info)
 * [Technologies](#technologies)
-![](Basketball.gif)
+![](BBall.gif)
 
 ## General info
 National Basketball Association (NBA) team/player database. Project was built using standard Blazor WebAssembly App template from Visual Studio 2019 IDE. 
